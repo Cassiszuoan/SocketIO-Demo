@@ -59,6 +59,13 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
+        SocketIOManager.sharedInstance.getChatMessage {(messageInfo) -> Void in
+            dispatch_async(dispatch_get_main_queue(), {
+                self.chatMessages.append(messageInfo)
+                self.tblChat.reloadData()
+            })
+        }
+        
     }
     
     
@@ -87,7 +94,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     // MARK: IBAction Methods
     
     @IBAction func sendMessage(sender: AnyObject) {
-
+        if tvMessageEditor.text.characters.count > 0  {
+            SocketIOManager.sharedInstance.sendMessage(tvMessageEditor.text!, withNickname: nickname)
+            tvMessageEditor.text = ""
+            tvMessageEditor.resignFirstResponder()
+        }
+        
     }
 
     
@@ -192,6 +204,24 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("idCellChat", forIndexPath: indexPath) as! ChatCell
         
+        let currentChatMessage = chatMessages[indexPath.row]
+        let senderNickname = currentChatMessage["nickname"] as! String
+        let message = currentChatMessage["message"] as! String
+        let messageDate = currentChatMessage["date"] as! String
+        
+        if senderNickname == nickname {
+            cell.lblChatMessage.textAlignment = NSTextAlignment.Right
+            cell.lblMessageDetails.textAlignment = NSTextAlignment.Right
+            
+            cell.lblChatMessage.textColor = lblNewsBanner.backgroundColor
+        }
+        
+        cell.lblChatMessage.text = message
+        cell.lblMessageDetails.text = "by \(senderNickname.uppercaseString) @ \(messageDate)"
+        
+        cell.lblChatMessage.textColor = UIColor.darkGrayColor()
+        
+        return cell
         return cell
     }
     
