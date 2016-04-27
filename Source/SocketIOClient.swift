@@ -39,7 +39,7 @@ public final class SocketIOClient : NSObject, SocketEngineClient, SocketParsable
             }
         }
     }
-
+    
     public var forceNew = false
     public var nsp = "/"
     public var options: Set<SocketIOClientOption>

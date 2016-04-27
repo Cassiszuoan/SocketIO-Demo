@@ -39,6 +39,7 @@
 		CCA9BBFD1CD0B3AB0079B834 /* SocketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA9BBE81CD0B3AB0079B834 /* SocketTypes.swift */; };
 		CCA9BBFE1CD0B3AB0079B834 /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA9BBE91CD0B3AB0079B834 /* SwiftRegex.swift */; };
 		CCA9BBFF1CD0B3AB0079B834 /* WebSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA9BBEA1CD0B3AB0079B834 /* WebSocket.swift */; };
+		CCA9BC011CD0B4310079B834 /* SocketIOManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA9BC001CD0B4310079B834 /* SocketIOManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,6 +77,7 @@
 		CCA9BBE81CD0B3AB0079B834 /* SocketTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketTypes.swift; sourceTree = "<group>"; };
 		CCA9BBE91CD0B3AB0079B834 /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftRegex.swift; sourceTree = "<group>"; };
 		CCA9BBEA1CD0B3AB0079B834 /* WebSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebSocket.swift; sourceTree = "<group>"; };
+		CCA9BC001CD0B4310079B834 /* SocketIOManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketIOManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				CCA9BBD51CD0B3AB0079B834 /* Source */,
+				CCA9BC001CD0B4310079B834 /* SocketIOManager.swift */,
 			);
 			name = SocketIO;
 			sourceTree = "<group>";
@@ -274,6 +277,7 @@
 				CCA9BBFA1CD0B3AB0079B834 /* SocketPacket.swift in Sources */,
 				CCA9BBF51CD0B3AB0079B834 /* SocketEventHandler.swift in Sources */,
 				CCA9BBF41CD0B3AB0079B834 /* SocketEngineWebsocket.swift in Sources */,
+				CCA9BC011CD0B4310079B834 /* SocketIOManager.swift in Sources */,
 				CCA9BBF21CD0B3AB0079B834 /* SocketEnginePollable.swift in Sources */,
 				C075D73D1C5E0F4E009F9044 /* BaseCell.swift in Sources */,
 				C075D71D1C5E0E81009F9044 /* AppDelegate.swift in Sources */,
