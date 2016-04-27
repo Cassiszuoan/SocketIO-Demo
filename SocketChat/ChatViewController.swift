@@ -222,7 +222,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell.lblChatMessage.textColor = UIColor.darkGrayColor()
         
         return cell
-        return cell
+       
     }
     
     
