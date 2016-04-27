@@ -42,6 +42,10 @@ class UsersViewController: UIViewController, UITableViewDelegate, UITableViewDat
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
+        if nickname == nil{
+            askForNickname()
+        }
+        
     }
     
     
@@ -79,6 +83,44 @@ class UsersViewController: UIViewController, UITableViewDelegate, UITableViewDat
         navigationItem.title = "SocketChat"
     }
     
+    func askForNickname() {
+        let alertController = UIAlertController(title: "SocketChat", message: "Please enter a nickname:", preferredStyle: UIAlertControllerStyle.Alert)
+        
+        alertController.addTextFieldWithConfigurationHandler(nil)
+        
+        let OKAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default) { (action) -> Void in
+          let textfield = alertController.textFields![0]
+            // 檢查是否有輸入nickname , 若count ==0 則重新詢問
+            if textfield.text?.characters.count == 0{
+                self.askForNickname()
+            }
+            else{
+                
+                self.nickname = textfield.text
+                
+                SocketIOManager.sharedInstance.connectToServerWithNickName(self.nickname, completionHandler: {
+                    (userList) -> Void in
+                    dispatch_async(dispatch_get_main_queue(),{
+                        () -> Void in
+                        if userList != nil {
+                            self.users = userList
+                            self.tblUserList.reloadData()
+                            self.tblUserList.hidden=false
+                            
+                        }
+                    })
+                    })
+                }
+            
+            //Upon getting the user list and making sure that it’s not empty, we assign it to the users property of the UsersViewController class, we update the tableview, and make it visible, as it’s hidden by default.
+            }
+        
+    
+
+
+        alertController.addAction(OKAction)
+        presentViewController(alertController, animated: true, completion: nil)
+    }
     
     func configureTableView() {
         tblUserList.delegate = self
