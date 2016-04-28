@@ -38,6 +38,8 @@ class SocketIOManager: NSObject {
             // When the user list is received from the server, we call our own method's completion handler passing as an argument that list.
             
         }
+        
+        listenForOtherMessages()
     }
     
     
@@ -61,6 +63,38 @@ class SocketIOManager: NSObject {
     func exitChatWithNickname(nickname: String, completionHandler: () -> Void) {
         socket.emit("exitUser", nickname)
         completionHandler()
+    }
+    
+    func sendStartTypingMessage(nickname: String){
+        socket.emit("startType",nickname)
+    }
+    
+    func sendStopTypingMessage(nickname: String){
+        socket.emit("stopType",nickname)
+    }
+    
+    private func listenForOtherMessages(){
+        socket.on("userConnectUpdate"){
+            (dataArray,ark) -> Void in
+            NSNotificationCenter.defaultCenter().postNotificationName("userWasConnectedNotification", object: dataArray[0] as! [String: AnyObject])
+            
+            // this returns a dictionary  (ID,nickname,connection status)
+        }
+        
+        socket.on("userExitUpdate"){
+            (dataArray,ark) -> Void in
+            
+            NSNotificationCenter.defaultCenter().postNotificationName("userWasDisconnectedNotification", object: dataArray[0] as! String)
+        }
+        
+        socket.on("userTypingUpdate"){
+            (dataArray,ark) -> Void in
+            
+            NSNotificationCenter.defaultCenter().postNotificationName("userTypingNotification", object: dataArray[0] as? [String: AnyObject])
+            
+        }
+        
+        
     }
 }
 

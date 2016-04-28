@@ -34,16 +34,62 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
 
         // Do any additional setup after loading the view.
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleKeyboardDidShowNotification:", name: UIKeyboardDidShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleKeyboardDidHideNotification:", name: UIKeyboardDidHideNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleConnectedUserUpdateNotification:", name: "userWasConnectedNotification", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleDisconnectedUserUpdateNotification:", name: "userWasDisconnectedNotification", object: nil)
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleUserTypingNotification", name: "userTypingNotification", object: nil)
         
         let swipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: "dismissKeyboard")
         swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.Down
         swipeGestureRecognizer.delegate = self
         view.addGestureRecognizer(swipeGestureRecognizer)
     }
+    
+    
+    func  handleUserTypingNotification(notificaion: NSNotification){
+        
+        if let typingUsersDictionary = notificaion.object![0] as? [String: AnyObject]{
+            var names = ""
+            var totalTypingUsers=0
+            
+            for(typingUser,_) in typingUsersDictionary{
+                if typingUser != nickname {
+                    names = (names == "") ? typingUser : "\(names),\(typingUser)"
+                    totalTypingUsers += 1
+                }
+            }
+            
+            if totalTypingUsers > 0 {
+                let verb = (totalTypingUsers==1) ? "is" : "are"
+                lblOtherUserActivityStatus.text = "\(names)\(verb) now typing a message..."
+                lblOtherUserActivityStatus.hidden = false
+            }
+            
+            lblOtherUserActivityStatus.hidden = true
+        }
+        
+        
+    }
 
+    
+    
+    func handleConnectedUserUpdateNotification(notification: NSNotification){
+        
+        let connectedUserInfo = notification.object as! [String: AnyObject]
+        let connectedUserNickname=connectedUserInfo["nickname"] as? String
+        lblNewsBanner.text = "User \(connectedUserNickname!.uppercaseString) has connected"
+        showBannerLabelAnimated()
+        
+    }
+    
+ 
+    
+    
+    func handleDisconnectedUserUpdateNotification(notification: NSNotification){
+        let disconnectedUserNickname = notification.object as! String
+        lblNewsBanner.text = "User \(disconnectedUserNickname.uppercaseString) has disconnected."
+        showBannerLabelAnimated()
+    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -184,6 +230,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     func dismissKeyboard() {
         if tvMessageEditor.isFirstResponder() {
             tvMessageEditor.resignFirstResponder()
+            SocketIOManager.sharedInstance.sendStopTypingMessage(nickname)
         }
     }
     
@@ -224,13 +271,16 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         return cell
        
     }
-    
+
     
     // MARK: UITextViewDelegate Methods
     
     func textViewShouldBeginEditing(textView: UITextView) -> Bool {
+        SocketIOManager.sharedInstance.sendStartTypingMessage(nickname)
         return true
     }
+    
+    
 
     
     // MARK: UIGestureRecognizerDelegate Methods
